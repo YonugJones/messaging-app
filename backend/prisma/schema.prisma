@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  username     String        @unique
+  password     String
+  profilePic   String?
+  profileBio   String?       @db.VarChar(255)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+  messagesSent Message[]
+  userChats    ChatUser[]
+  userMessages UserMessage[]
+
+  @@index([username])
+}
+
+model Message {
+  id         Int           @id @default(autoincrement())
+  content    String        @db.Text
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  deletedAt  DateTime?
+  authorId   Int
+  chatId     Int
+  author     User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  chat       Chat          @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  recipients UserMessage[]
+
+  @@index([createdAt])
+}
+
+model Chat {
+  id        Int        @id @default(autoincrement())
+  name      String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  messages  Message[]
+  chatUsers ChatUser[]
+
+  @@index([createdAt])
+}
+
+model ChatUser {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  chatId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chatId])
+}
+
+model UserMessage {
+  id         Int     @id @default(autoincrement())
+  userId     Int
+  messageId  Int
+  isRead     Boolean @default(false)
+  isArchived Boolean @default(false)
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message    Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, messageId])
+}
