@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const errorHandler = require('./middleware/errorHandler');
+const authRouter = require('./routes/auth');
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(cors());
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the backend API' })
 });
+
+app.use('/auth', authRouter);
 
 // Global error handler
 app.use(errorHandler);
