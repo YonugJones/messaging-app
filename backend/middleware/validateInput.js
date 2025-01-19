@@ -10,7 +10,9 @@ const validateSignup = [
     .notEmpty()
     .withMessage('Username field must not be empty')
     .isLength({ min: 3 })
-    .withMessage('Username mus be at least 3 characters long'),
+    .withMessage('Username mus be at least 3 characters long')
+    .matches(/^\S+$/)
+    .withMessage('Username must not contain spaces'),
   body('password')
     .isLength({ min: 10 })
     .withMessage('Password must be at least 10 characters')
