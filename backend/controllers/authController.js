@@ -14,7 +14,7 @@ const signup = asyncHandler(async (req, res) => {
 
   const checkUsername = await prisma.user.findUnique({ where: { username } });
   if (checkUsername) {
-    throw new CustomError('Username is taken', 409)
+    throw new CustomError('Username is taken', 409);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -31,7 +31,7 @@ const signup = asyncHandler(async (req, res) => {
     { id: newUser.id, username: newUser.username },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRE || '1h' }
-  )
+  );
 
   res.status(201).json({
     success: true,
@@ -42,8 +42,8 @@ const signup = asyncHandler(async (req, res) => {
       username: newUser.username
     },
     token
-  })
-})
+  });
+});
 
 module.exports = {
   signup
