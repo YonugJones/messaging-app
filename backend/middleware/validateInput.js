@@ -53,7 +53,34 @@ const validateLogin = [
   },
 ];
 
+const validateUpdateUserInfo = [
+  body('name')
+    .notEmpty()
+    .withMessage('Name field is blank'),
+  body('username')
+    .notEmpty()
+    .withMessage('Username field must not be empty')
+    .isLength({ min: 3 })
+    .withMessage('Username mus be at least 3 characters long')
+    .matches(/^\S+$/)
+    .withMessage('Username must not contain spaces'),
+  body('profilePic')
+    .optional()
+    .isURL()
+    .withMessage('Profile picture must be a valid URL'),
+  body('profileBio')
+    .optional(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    next();
+  },
+]
+
 module.exports = {
   validateSignup,
-  validateLogin
+  validateLogin,
+  validateUpdateUserInfo
 }

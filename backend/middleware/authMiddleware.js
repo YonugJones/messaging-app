@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const CustomError = require('../errors/customError');
 
-const authenticateToken = asyncHandler(async (req, res) => {
+const authenticateToken = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader || !authHeader.toLowerCase().startsWith('bearer ')) {
@@ -19,14 +19,30 @@ const authenticateToken = asyncHandler(async (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    next();
+    next(); 
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
-      throw new CustomError('Forbidden: token has expired', 403);
+      throw new CustomError('Unauthorized: token has expired', 403);
     } else {
       throw new CustomError('Unauthorized: invalid token', 401);
     }
   }
 });
 
-module.exports = authenticateToken;
+const authorizeUser = asyncHandler(async (req, res, next) => {
+  const userId = parseInt(req.params.userId, 10);
+  if (isNaN(userId)) {
+    throw new CustomError('Invalid user ID', 400);
+  }
+
+  if (req.user.id !== userId) {
+    throw new CustomError('Unauthorized: cannot perform this action', 403)
+  }
+
+  next();
+})
+
+module.exports = {
+  authenticateToken,
+  authorizeUser
+};
