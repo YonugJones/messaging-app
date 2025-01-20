@@ -8,7 +8,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
       id: true,
       name: true,
       username: true,
-    }
+    },
   });
 
   if (users.length === 0) {
@@ -51,8 +51,8 @@ const getUser = asyncHandler(async (req, res) => {
     success: true,
     message: 'User information retrieved',
     data: user,
-   })
-})
+   });
+});
 
 const updateUserInfo = asyncHandler(async (req, res) => {
 
@@ -75,26 +75,26 @@ const updateUserInfo = asyncHandler(async (req, res) => {
       name,
       username,
       profilePic,
-      profileBio
+      profileBio,
     },
     select: {
       id: true,
       name: true,
       username: true,
       profilePic: true,
-      profileBio: true
+      profileBio: true,
     },
   });
 
   res.status(200).json({
     success: true,
     message: 'User information updated',
-    data: updateUser
-  })
-})
+    data: updateUser,
+  });
+});
 
 module.exports = {
   getAllUsers,
   getUser,
-  updateUserInfo
+  updateUserInfo,
 }

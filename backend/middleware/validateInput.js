@@ -69,7 +69,9 @@ const validateUpdateUserInfo = [
     .isURL()
     .withMessage('Profile picture must be a valid URL'),
   body('profileBio')
-    .optional(),
+    .optional()
+    .isLength({ max: 255 })
+    .withMessage('profileBio must not exceed 255 characters'),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
