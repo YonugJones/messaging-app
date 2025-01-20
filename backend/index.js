@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const errorHandler = require('./middleware/errorHandler');
 const authRouter = require('./routes/auth');
+const chatRouter = require('./routes/chat');
 const messageRouter = require('./routes/message');
 const userRouter = require('./routes/user');
 
@@ -20,7 +21,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth', authRouter);
-app.use('/message', messageRouter);
+app.use('/chats', chatRouter);
+app.use('/messages', messageRouter);
 app.use('/users', userRouter);
 
 // Global error handler
