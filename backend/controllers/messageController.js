@@ -1,6 +1,7 @@
 const prisma = require('../prisma/prismaClient');
 const asyncHandler = require('express-async-handler');
 const CustomError = require('../errors/customError');
+const { all } = require('../routes/chat');
 
 const sendMessage = asyncHandler(async (req, res) => {
   const senderId = req.user.id;
@@ -23,14 +24,15 @@ const sendMessage = asyncHandler(async (req, res) => {
     throw new CustomError('Chat not found', 404);
   }
 
-  const isSenderInChat = chat.chatUsers.some((user) => user.id === senderId);
+  const isSenderInChat = chat.chatUsers.some((user) => user.userId === senderId);
   if (!isSenderInChat) {
     throw new CustomError('Unauthorized. Sender is not part of chat', 403);
   }
 
-  const allRecipientsValid = recipientIds.every((recipientId) => {
-    chat.chatUsers.some((user) => user.id === recipientId)
-  });
+  const allRecipientsValid = recipientIds.every((recipientId) => 
+    chat.chatUsers.some((user) => user.userId === recipientId)
+  );
+
   if (!allRecipientsValid) {
     throw new CustomError('One or more recipients are not part of chat', 400);  
   }

@@ -36,7 +36,7 @@ const getChat = asyncHandler(async (req, res) => {
     throw new CustomError('Chat not found', 404);
   }
   
-  const isUserInChat = chat.chatUsers.some((chatUser) => chatUser.id === userId);
+  const isUserInChat = chat.chatUsers.some((chatUser) => chatUser.userId === userId);
   if (!isUserInChat) {
     throw new CustomError('Unauthorized: must be in chat to view', 403);
   }
@@ -57,9 +57,47 @@ const addUserToChat = asyncHandler(async (req, res) => {
   }
 
   if (!chatUserIds || !Array.isArray(chatUserIds) || chatUserIds.length === 0) {
-    throw new CustomError('Users to add are missing', 404);
+    throw new CustomError('chatUserIds to add are missing', 404);
   }
 
+  const chat = await prisma.chat.findUnique({
+    where: { id: chatId },
+    include: {
+      chatUsers: true,
+    },
+  });
+
+  if (!chat) {
+    throw new CustomError('Chat not found', 404);
+  }
+
+  const isUserInChat = chat.chatUsers.some((chatUser) => chatUser.userId === userId);
+  if (!isUserInChat) {
+    throw new CustomError('Unauthorized: must be in chat to view', 403);
+  }
+
+  const newChatUsers = chatUserIds.map((chatUserId) => ({
+    userId: chatUserId,
+    chatId,
+  }))
+
+  await prisma.chatUser.createMany({
+    data: newChatUsers,
+    skipDuplicates: true,
+  });
+
+  const updatedChat = await prisma.chat.findUnique({
+    where: { id: chatId },
+    include: {
+      chatUsers: true,
+    },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'User or users added to chat',
+    data: updatedChat,
+  });
 });
 
 module.exports = {
