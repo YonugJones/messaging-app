@@ -1,9 +1,11 @@
 import App from './App';
+import ErrorPage from './pages/ErrorPage/ErrorPage';
 
 const routes = [
   {
     path: '/',
-    element: <App />
+    element: <App />,
+    errorElement: <ErrorPage />
   }
 ];
 
