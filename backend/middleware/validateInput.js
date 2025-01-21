@@ -81,8 +81,24 @@ const validateUpdateUserInfo = [
   },
 ]
 
+const validateMessage = [
+  body('content')
+    .notEmpty()
+    .withMessage('Content field cannot be blank')
+    .isLength({ max: 1000 })
+    .withMessage('Content cannot exceed 1000 characters'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    next();
+  },
+]
+
 module.exports = {
   validateSignup,
   validateLogin,
-  validateUpdateUserInfo
+  validateUpdateUserInfo,
+  validateMessage,
 }

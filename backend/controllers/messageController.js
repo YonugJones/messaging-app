@@ -1,19 +1,17 @@
 const prisma = require('../prisma/prismaClient');
 const asyncHandler = require('express-async-handler');
 const CustomError = require('../errors/customError');
-const { all } = require('../routes/chat');
 
 const sendMessage = asyncHandler(async (req, res) => {
   const senderId = req.user.id;
   const { chatId, content, recipientIds } = req.body;
 
-
   if (!chatId) {
     throw new CustomError('Chat ID needed', 404);
   }
 
-  if (!content || !recipientIds || !Array.isArray(recipientIds) || recipientIds.length === 0) {
-    throw new CustomError('Message content and recipients are required', 400);
+  if (!recipientIds || !Array.isArray(recipientIds) || recipientIds.length === 0) {
+    throw new CustomError('Recipients are required', 400);
   }
 
   const chat = await prisma.chat.findUnique({
@@ -57,6 +55,42 @@ const sendMessage = asyncHandler(async (req, res) => {
   })
 });
 
+const editMessage = asyncHandler(async (req, res) => {
+  const senderId = req.user.id;
+  const { content } = req.body;
+  const messageId = parseInt(req.params.messageId, 10);
+
+  if (isNaN(messageId)) {
+    throw new CustomError('Invalid message ID', 400);
+  }
+
+  if (!messageId) {
+    throw new CustomError('Message ID missing', 404);
+  }
+
+  if (!content) {
+    throw new CustomError('Message content cannot be blank', 404);
+  }
+
+  const message = await prisma.message.findUnique({ where: { id: messageId } });
+
+  if (senderId !== message.authorId) {
+    throw new CustomError('Unauthorized: only sender can edit message', 403);
+  }
+
+  const updatedMessage = await prisma.message.update({
+    where: { id: messageId },
+    data: { content },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Message updated successfully',
+    data: updatedMessage,
+  });
+});
+
 module.exports = {
   sendMessage,
+  editMessage,
 }
