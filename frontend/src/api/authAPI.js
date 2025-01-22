@@ -1,26 +1,37 @@
-const API_URL = 'http://localhost:3000';
+// important note for myself:
+// axios wraps response in a data wrapper so response.data will equal the response i made in my controller. 
+// response.data.data equals the data object inside my controller
 
-export const loginAPI = async (username, password) => {
+import axios from 'axios';
+
+const API_BASE = 'http://localhost:3000';
+
+export const apiClient = axios.create({
+  baseURL: API_BASE
+});
+
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+export const loginAPI = async (credentials) => {
   try {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    const response = await apiClient.post('/auth/login', credentials);
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Login API failed')
-    }
+    const { token, data: user } = response.data;
 
-    const { data, token } = response.json();
     localStorage.setItem('token', token);
+    localStorage.setItem('username', user.username); 
 
-    return data;
+    return response.data;
   } catch (err) {
-    console.error('Error logging in', err.message);
+    console.error('Login failed: ', err);
     throw err;
   }
 };
