@@ -6,7 +6,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany({
     select: {
       id: true,
-      name: true,
       username: true,
     },
   });
@@ -36,7 +35,6 @@ const getUser = asyncHandler(async (req, res) => {
     where: { id: userId },
     select: {
       id: true,
-      name: true,
       username: true,
       profilePic: true,
       profileBio: true
@@ -66,20 +64,18 @@ const updateUserInfo = asyncHandler(async (req, res) => {
     throw new CustomError('User not found', 404);
   }
 
-  const { name, username, profilePic, profileBio } = req.body;
+  const { username, profilePic, profileBio } = req.body;
 
 
   const updateUser = await prisma.user.update({
     where: { id: userId },
     data: {
-      name,
       username,
       profilePic,
       profileBio,
     },
     select: {
       id: true,
-      name: true,
       username: true,
       profilePic: true,
       profileBio: true,
