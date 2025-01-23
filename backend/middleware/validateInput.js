@@ -1,16 +1,11 @@
 const { body, validationResult } = require('express-validator');
 
 const validateSignup = [
-  body('name')
-    .notEmpty()
-    .withMessage('Name field must not be empty')
-    .isLength({ min: 2 })
-    .withMessage('Name must be at least 2 characters long'),
   body('username')
     .notEmpty()
     .withMessage('Username field must not be empty')
-    .isLength({ min: 3 })
-    .withMessage('Username mus be at least 3 characters long')
+    .isLength({ min: 3, max: 24 })
+    .withMessage('Username mus be between 3 and 24 characters long')
     .matches(/^\S+$/)
     .withMessage('Username must not contain spaces'),
   body('password')
@@ -54,14 +49,11 @@ const validateLogin = [
 ];
 
 const validateUpdateUserInfo = [
-  body('name')
-    .notEmpty()
-    .withMessage('Name field is blank'),
   body('username')
     .notEmpty()
     .withMessage('Username field must not be empty')
-    .isLength({ min: 3 })
-    .withMessage('Username mus be at least 3 characters long')
+    .isLength({ min: 3, max: 24 })
+    .withMessage('Username mus be between 3 and 24 characters long')
     .matches(/^\S+$/)
     .withMessage('Username must not contain spaces'),
   body('profilePic')

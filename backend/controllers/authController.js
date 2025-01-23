@@ -7,9 +7,9 @@ const jwt = require('jsonwebtoken');
 
 const signup = asyncHandler(async (req, res) => {
 
-  const { name, username, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!name || !username || !password) {
+  if ( !username || !password) {
     throw new CustomError('All fields are required', 400);
   }
 
@@ -22,7 +22,6 @@ const signup = asyncHandler(async (req, res) => {
 
   const newUser = await prisma.user.create({
     data: {
-      name,
       username,
       password: hashedPassword
     },
@@ -39,7 +38,6 @@ const signup = asyncHandler(async (req, res) => {
     message: 'New user created',
     data: {
       id: newUser.id,
-      name: newUser.name,
       username: newUser.username,
     },
     token,
@@ -81,7 +79,6 @@ const login = asyncHandler(async (req, res) => {
     message: 'Login successful. Welcome back, ' + user.username,
     data: {
       id: user.id,
-      name: user.name,
       username: user.username,
     },
     token,
