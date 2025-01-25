@@ -9,8 +9,6 @@ const logout = asyncHandler(async (req, res) => {
   // extract the refreshToken attached to the cookie
   const { refreshToken } = req.cookies;
   // if no refreshToken is present, respond with success for idempotent behavior
-  console.log(`Refresh Token: ${refreshToken}`); // logs the correct refreshToken
-
   if (!refreshToken) {
     return res.status(204).json({ success: true });
   }
@@ -26,10 +24,7 @@ const logout = asyncHandler(async (req, res) => {
     // if user doesn't exist or token does not match the users token in database, delete refreshToken
     if (!user || user.refreshToken !== refreshToken) {
       res.clearCookie('refreshToken', { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-      return res.status(204).json({
-        success: true,
-        message: 'cookie not attached to user'
-      })
+      return res.status(204).json({ success: true })
     }
 
     // Delete refresh cookie in DB

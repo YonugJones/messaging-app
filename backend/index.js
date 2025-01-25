@@ -1,10 +1,11 @@
-// imports and requires
+// Imports
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 const errorHandler = require('./middleware/errorHandler');
 const { authenticateToken } = require('./middleware/authMiddleware');
+const credentials = require('./middleware/credentials');
 const cookieParser = require('cookie-parser');
 const authRouter = require('./routes/auth');
 const chatRouter = require('./routes/chat');
@@ -13,8 +14,12 @@ const messageRouter = require('./routes/message');
 const tokenRouter = require('./routes/token');
 const userRouter = require('./routes/user');
 
-// define the main app
+// Define the main app
 const app = express();
+
+// Handle options credentials check before CORS
+// fetch cookie credentials requirement
+app.use(credentials);
 
 // Built in Middleware for JSON
 app.use(express.json());
