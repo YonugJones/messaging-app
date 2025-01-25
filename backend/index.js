@@ -5,7 +5,7 @@ const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 const errorHandler = require('./middleware/errorHandler');
 const { authenticateToken } = require('./middleware/authMiddleware');
-const credentials = require('./middleware/credentials');
+const corsCredentials = require('./middleware/corsCredentials');
 const cookieParser = require('cookie-parser');
 const authRouter = require('./routes/auth');
 const chatRouter = require('./routes/chat');
@@ -19,7 +19,10 @@ const app = express();
 
 // Handle options credentials check before CORS
 // fetch cookie credentials requirement
-app.use(credentials);
+app.use(corsCredentials);
+
+// Cross Origin Resource Sharing
+app.use(cors(corsOptions));
 
 // Built in Middleware for JSON
 app.use(express.json());
@@ -29,9 +32,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // middleware for cookies
 app.use(cookieParser());
-
-// Cross Origin Resource Sharing
-app.use(cors(corsOptions));
 
 // Index Auth and Token routes (no token needed)
 app.get('/', (req, res) => {

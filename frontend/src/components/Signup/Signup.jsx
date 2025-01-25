@@ -2,12 +2,11 @@ import { useRef, useState, useEffect } from 'react'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom';
-import axios from '../../api/axios';
+import { signup } from '../../api/authService';
 import './Signup.css';
 
 const USERNAME_REGEX = /^\S{3,24}$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/;
-const SIGNUP_URL = '/auth/signup'; 
 
 const Signup = () => {
   const usernameRef = useRef();
@@ -36,16 +35,12 @@ const Signup = () => {
   // Validates the username property
   useEffect(() => {
     const result = USERNAME_REGEX.test(username);
-    console.log(result);
-    console.log(username);
     setValidUsername(result);
   }, [username]);
 
   // Validates the password property
   useEffect(() => {
     const result = PASSWORD_REGEX.test(password);
-    console.log(result);
-    console.log(password);
     setValidPassword(result);
     const confirm = password === confirmPassword;
     setValidConfirmPassword(confirm);
@@ -60,22 +55,18 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(SIGNUP_URL,
-        JSON.stringify({ username, password, confirmPassword }),
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        }
-      );
-      console.log(response.data);
-      console.log(JSON.stringify(response));
+      // API call with inputed credentials
+      await signup(username, password, confirmPassword);
       setSuccess(true);
       // clear the input fields 
+      setUsername('');
+      setPassword('');
+      setConfirmPassword('');
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No server response');
       } else if (err.response?.status === 409) {
-        setErrMsg('Username  taken');
+        setErrMsg('Username taken');
       } else {
         setErrMsg('Registration failed');
       }

@@ -23,7 +23,11 @@ const logout = asyncHandler(async (req, res) => {
 
     // if user doesn't exist or token does not match the users token in database, delete refreshToken
     if (!user || user.refreshToken !== refreshToken) {
-      res.clearCookie('refreshToken', { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+      res.clearCookie('refreshToken', { 
+        httpOnly: true, 
+        sameSite: 'None',
+        secure: true
+      });
       return res.status(204).json({ success: true })
     }
 
@@ -35,7 +39,11 @@ const logout = asyncHandler(async (req, res) => {
       },
     });
 
-    res.clearCookie('refreshToken', { httpOnly: true });
+    res.clearCookie('refreshToken', { 
+      httpOnly: true, 
+      sameSite: 'None',
+      secure: true
+    });
     res.status(200).json({
       sucess: true,
       message: `${user.username} successfully logged out`,

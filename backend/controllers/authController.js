@@ -86,6 +86,8 @@ const login = asyncHandler(async (req, res) => {
   // set the refreshToken in an httpOnly cookie for added security
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true, // prevent client side access
+    sameSite: 'None',
+    secure: true,
     maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
   });
 
@@ -105,3 +107,8 @@ module.exports = {
   signup,
   login,
 }
+
+
+// created Guest user for people to use
+// username: Guest
+// password: GuestPassword1?
