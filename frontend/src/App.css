@@ -16,7 +16,7 @@ body, html {
 header {
   position: sticky;
   top: 0;
-  background-color: #313131; 
+  background-color: #1c1a1a; 
   z-index: 1000; 
   text-align: center;
 }
@@ -24,11 +24,11 @@ header {
 main {
   flex: 1; 
   overflow-y: auto; 
-  background-color: #1a1a1a;
+  background-color: #2d2c2c;
 }
 
 footer {
-  background-color: #313131; 
+  background-color: #1c1a1a; 
   text-align: center;
   padding: 5px;
 }

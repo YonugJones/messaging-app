@@ -10,14 +10,15 @@ const authenticateToken = asyncHandler(async (req, res, next) => {
     throw new CustomError('Unauthorized: no token provided', 401);
   }
 
+  // Bearer 1234 becomes 1234
   const token = authHeader.split(' ')[1];
 
-  if (!process.env.JWT_SECRET) {
-    throw new CustomError('Server error: JWT_SECRET not defined', 500);
+  if (!process.env.ACCESS_TOKEN_SECRET) {
+    throw new CustomError('Server error: ACCESS_TOKEN_SECRET not defined', 500);
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     req.user = decoded;
     next(); 
   } catch (err) {

@@ -2,10 +2,12 @@ import { useRef, useState, useEffect } from 'react'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom';
+import axios from '../../api/axios';
 import './Signup.css';
 
 const USERNAME_REGEX = /^\S{3,24}$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/;
+const SIGNUP_URL = '/auth/signup'; 
 
 const Signup = () => {
   const usernameRef = useRef();
@@ -56,8 +58,29 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(username, password);
-    setSuccess(true);
+
+    try {
+      const response = await axios.post(SIGNUP_URL,
+        JSON.stringify({ username, password, confirmPassword }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+      );
+      console.log(response.data);
+      console.log(JSON.stringify(response));
+      setSuccess(true);
+      // clear the input fields 
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg('No server response');
+      } else if (err.response?.status === 409) {
+        setErrMsg('Username  taken');
+      } else {
+        setErrMsg('Registration failed');
+      }
+      errRef.current.focus();
+    }
   }
 
   return (
