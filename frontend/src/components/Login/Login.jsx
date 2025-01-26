@@ -1,11 +1,11 @@
-import { useRef, useState, useEffect, useContext } from 'react';
-import AuthContext from '../../context/AuthContext';
+import { useRef, useState, useEffect } from 'react';
+import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 import { login } from '../../api/authService';
 import './Login.css';
 
 const Login = () => {
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
   const usernameRef = useRef();
   const errRef = useRef();
 
