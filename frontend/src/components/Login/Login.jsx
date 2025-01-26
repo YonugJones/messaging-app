@@ -1,10 +1,11 @@
-import { useRef, useState, useEffect } from 'react';
-// import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useRef, useState, useEffect, useContext } from 'react';
+import AuthContext from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { login } from '../../api/authService';
 import './Login.css';
 
 const Login = () => {
+  const { setAuth } = useContext(AuthContext);
   const usernameRef = useRef();
   const errRef = useRef();
 
@@ -25,11 +26,27 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(username, password);
-    setUsername('');
-    setPassword('');
-    setSuccess(true);
-    
+
+    try {
+      const data = await login(username, password);
+      const { accessToken } = data;
+      setAuth({ username, accessToken })
+      setUsername('');
+      setPassword('');
+      setSuccess(true);
+      console.log(data);
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg('No server response')
+      } else if (err.response?.status === 400) {
+        setErrMsg('Missing username or password')
+      } else if (err.response?.status === 401) {
+        setErrMsg('Unauthorized')
+      } else {
+        setErrMsg('Login failed')
+      }
+      errRef.current.focus()
+    }
   }
   
   return (
