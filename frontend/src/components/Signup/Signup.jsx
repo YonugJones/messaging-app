@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect } from 'react'
-import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useRef, useState, useEffect } from 'react';
+import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import { signup } from '../../api/authService';
 import './Signup.css';
@@ -83,7 +83,7 @@ const Signup = () => {
         </section>
       ) : (
         <section>
-          {/* USERNAME */}
+          {/* errMsg display at top of form */}
           <p 
             ref={errRef} 
             className={ errMsg ? 'errmsg' : 'offscreen' } 
@@ -92,6 +92,7 @@ const Signup = () => {
             {errMsg}
           </p>
           <h1>Signup</h1>
+          {/* USERNAME FIELD */}
           <form onSubmit={handleSubmit}>
             <label htmlFor='username'>
               Username: 
@@ -108,6 +109,7 @@ const Signup = () => {
               ref={usernameRef}
               autoComplete='off'
               onChange={(e) => setUsername(e.target.value)}
+              value={username}
               required 
               aria-invalid={ validUsername ? 'false' : 'true' }
               aria-describedby='uidnote'
@@ -123,7 +125,7 @@ const Signup = () => {
               Username cannot contain spaces <br />
               Cannot start with a space <br />
             </p>
-            {/* PASSWORD */}
+            {/* PASSWORD FIELD */}
             <label htmlFor="password">
               Password:
               <span className={ validPassword ? 'valid' : 'hide' }>
@@ -137,6 +139,7 @@ const Signup = () => {
               type='password' 
               id='password'
               onChange={(e) => setPassword(e.target.value)}
+              value={password}
               autoComplete='off'
               required
               aria-invalid={ validPassword ? 'false' : 'true' }
@@ -158,7 +161,7 @@ const Signup = () => {
               <span aria-label='asterisk'>*</span><span aria-label='open parentheses'>(</span>
               <span aria-label='closed parentheses'>)</span>
             </p>
-            {/* CONFIRM PASSWORD */}
+            {/* CONFIRM PASSWORD FIELD */}
             <label htmlFor='confirmPassword'>
               Confirm Password:
               <span className={ validConfirmPassword && confirmPassword ? 'valid' : 'hide' }>
@@ -172,6 +175,7 @@ const Signup = () => {
               type='password' 
               id='confirmPassword'
               onChange={(e) => setConfirmPassword(e.target.value)}
+              value={confirmPassword}
               autoComplete='off'
               required
               aria-invalid={ validConfirmPassword ? 'false' : 'true' }
@@ -194,7 +198,7 @@ const Signup = () => {
           <p>
             Already registered?<br />
             <span className='line'>
-              <Link to='#'>
+              <Link to='/login'>
                 Login
               </Link>
             </span>
