@@ -11,10 +11,10 @@ export const AuthProvider = ({ children }) => {
       { children }
     </AuthContext.Provider>
   )
-}
+};
 
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired
-}
+};
 
 export default AuthContext;
