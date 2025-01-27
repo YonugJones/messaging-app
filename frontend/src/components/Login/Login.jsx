@@ -37,6 +37,7 @@ const Login = () => {
       setAuth({ username, accessToken })
       setUsername('');
       setPassword('');
+      console.log(data);
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {
