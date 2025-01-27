@@ -3,10 +3,15 @@
 
 // import axios from axios library
 import axios from 'axios';
+const BASE_URL = 'http://localhost:3000';
 
 // create instance of axios for use by other api service files
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000'
+export default axios.create({
+  baseURL: BASE_URL
 });
 
-export default axiosInstance;
+export const axiosPrivate = axios.create({
+  baseURL: BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
+});
