@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
-const USERS_URL = '/users';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { getUsers } from '../../api/userService';
+import useRefreshToken from '../../hooks/useRefreshToken';
 
 const Users = () => {
   const [users, setUsers] = useState();
@@ -10,17 +10,16 @@ const Users = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const refresh = useRefreshToken();
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
-    const getUsers = async () => {
+    const fetchUsers = async () => {
       try {
-        const response = await axiosPrivate.get(USERS_URL, {
-          signal: controller.signal,
-        });
-        console.log(response.data);
-        if (isMounted) setUsers(response.data);
+        const data = await getUsers(axiosPrivate, controller.signal);
+        if (isMounted) setUsers(data.data);
       } catch (err) {
         console.error('Error fetching users:', err);
 
@@ -34,7 +33,7 @@ const Users = () => {
       }
     };
 
-    getUsers();
+    fetchUsers();
 
     return () => {
       isMounted = false;
@@ -47,13 +46,15 @@ const Users = () => {
       <h2>Users List</h2>
       {users?.length ? (
         <ul>
-          {users.map((user, i) => (
-            <li key={i}>{user?.username}</li>
+          {users.map((user) => (
+            <li key={user.id}>{user?.username}</li>
           ))}
         </ul>
       ) : (
         <p>No users to display</p>
       )}
+      <button onClick={() => refresh()}>Refresh</button>
+      <br />
     </article>
   );
 };

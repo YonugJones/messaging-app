@@ -20,7 +20,6 @@ const logout = asyncHandler(async (req, res) => {
     // find user in database matching payload id to user id
     const user = await prisma.user.findUnique({ where: { id: payload.id } });
 
-
     // if user doesn't exist or token does not match the users token in database, delete refreshToken
     if (!user || user.refreshToken !== refreshToken) {
       res.clearCookie('refreshToken', { 

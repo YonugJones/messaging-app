@@ -56,7 +56,7 @@ const Signup = () => {
 
     try {
       // API call with inputed credentials
-      await signup(username, password, confirmPassword);
+      await signup({ username, password, confirmPassword });
       setSuccess(true);
       // clear the input fields 
       setUsername('');

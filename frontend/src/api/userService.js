@@ -1,10 +1,8 @@
-// important note for myself:
-// axios wraps response in a data wrapper so response.data will equal the response made in my controller. 
+import { axiosPrivate } from './axios';
 
-// import axios from './axios';
+const USERS_URL = '/users';
 
-// const USERS_URL = '/users';
-
-// export const fetchUsers = async () => {
-//   const response = await axios.get(USERS_URL)
-// }
+export const getUsers = async (axiosInstance, signal) => {
+  const response = await axiosPrivate.get(USERS_URL, { signal });
+  return response.data;
+}

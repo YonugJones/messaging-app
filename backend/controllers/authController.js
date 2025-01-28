@@ -107,8 +107,3 @@ module.exports = {
   signup,
   login,
 }
-
-
-// created Guest user for people to use
-// username: Guest
-// password: GuestPassword1?

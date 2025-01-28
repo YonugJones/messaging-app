@@ -1,4 +1,4 @@
-import axios from '../api/axios';
+import { axiosPrivate } from '../api/axios';
 import useAuth from './useAuth';
 
 const REFRESH_URL = '/refresh';
@@ -8,22 +8,19 @@ const useRefreshToken = () => {
 
   const refresh = async () => {
     try {
-      const response = await axios.get(REFRESH_URL, {
-        withCredentials: true,
-      });
+      const response = await axiosPrivate.get(REFRESH_URL);
       setAuth(prev => {
-        console.log('Previous Auth State:', prev);
-        console.log('New Access Token:', response.data.accessToken);
+        console.log(JSON.stringify(prev)); // want to look at the prev auth state
+        console.log(response.data.accessToken); // want to see the old accessToken
         return { ...prev, accessToken: response.data.accessToken };
       });
       return response.data.accessToken;
     } catch (err) {
       console.error('Error refreshing token:', err);
-      setAuth({});
-      throw err; // Ensure this propagates correctly
+      setAuth(null);
+      throw err;
     }
   };
-  
   return refresh;
 }
 

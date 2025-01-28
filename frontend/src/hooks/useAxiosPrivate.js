@@ -1,3 +1,5 @@
+// Attached accessToken to the cookie that is sent with this axios instance
+
 import { axiosPrivate } from '../api/axios';
 import { useEffect } from 'react';
 import useRefreshToken from './useRefreshToken';
@@ -10,8 +12,8 @@ const useAxiosPrivate = () => {
   useEffect(() => {
     const requestIntercept = axiosPrivate.interceptors.request.use(
       (config) => {
-        if (!config.headers['Authorization'] && auth?.accessToken) {
-          config.headers['Authorization'] = `Bearer ${auth.accessToken}`;
+        if (!config.headers['authorization'] && auth?.accessToken) {
+          config.headers['authorization'] = `Bearer ${auth.accessToken}`;
         }
         return config;
       },
@@ -23,14 +25,16 @@ const useAxiosPrivate = () => {
       async (error) => {
         const prevRequest = error?.config;
 
+        // request fails due to an expired accessToken or if sent doesn't exist, so it only retries once
         if (error?.response?.status === 403 && !prevRequest?.sent) {
+          prevRequest.sent = true;
           try {
-            prevRequest.sent = true;
             const newAccessToken = await refresh();
-            prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+            prevRequest.headers['authorization'] = `Bearer ${newAccessToken}`;
             return axiosPrivate(prevRequest);
           } catch (refreshError) {
             console.error('Error refreshing token:', refreshError);
+            
             return Promise.reject(refreshError);
           }
         }

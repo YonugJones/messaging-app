@@ -32,12 +32,11 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const data = await login(username, password);
+      const data = await login({ username, password });
       const { accessToken } = data;
       setAuth({ username, accessToken })
       setUsername('');
       setPassword('');
-      console.log(data);
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {
