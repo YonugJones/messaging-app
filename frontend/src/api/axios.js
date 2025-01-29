@@ -1,22 +1,18 @@
-// important note for myself:
+// Note for myself:
 // axios wraps response in a data wrapper so response.data will equal the response made in my controller. 
+// use const { data } = await axios blah blah blah to return my backend code without that data wrapper
 
-// import axios from axios library
 import axios from 'axios';
+
 const BASE_URL = 'http://localhost:3000';
 
-export const createAxiosInstance = (options = {}) => {
-  return axios.create({
-    baseURL: BASE_URL,
-    headers: { 'Content-Type': 'application/json' },
-    ...options
-  })
-};
-
-export const axiosPublic = createAxiosInstance({
-  withCredentials: false
+export default axios.create({
+    baseURL: BASE_URL
 });
 
-export const axiosPrivate = createAxiosInstance({
-  withCredentials: true
+// interceptors will be attached to axiosPrivate
+export const axiosPrivate = axios.create({
+    baseURL: BASE_URL, 
+    headers: { 'Content-Type': 'application/json' },
+    withCredentials: true,
 });

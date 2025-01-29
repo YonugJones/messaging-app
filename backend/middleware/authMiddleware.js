@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 const CustomError = require('../errors/customError');
 
 const authenticateToken = asyncHandler(async (req, res, next) => {
-  const authHeader = req.headers['authorization'];
+  const authHeader = req.headers['authorization'] || req.headers['Authorization'];
 
   if (!authHeader || !authHeader.toLowerCase().startsWith('bearer ')) {
     throw new CustomError('Unauthorized: no token provided', 401);

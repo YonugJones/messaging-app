@@ -1,8 +1,10 @@
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { login } from '../../api/authService';
+import axios from '../../api/axios';
 import './Login.css';
+
+const LOGIN_URL = '/auth/login';
 
 const Login = () => {
   const { setAuth } = useAuth();
@@ -32,12 +34,19 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const data = await login({ username, password });
+      const { data } = await axios.post(LOGIN_URL,
+        JSON.stringify({ username, password }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
+      console.log(JSON.stringify(data)); // backend sends succes, message, and data which includes id, username, and accessToken
       const { accessToken } = data;
       setAuth({ username, accessToken })
       setUsername('');
       setPassword('');
-      navigate(from, { replace: true });
+      navigate(from, { replace: true }); // sent back to where the user came from
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No server response')

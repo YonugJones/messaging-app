@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { getUsers } from '../../api/userService';
-import useRefreshToken from '../../hooks/useRefreshToken';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+import './Users.css';
+
+const USERS_URL = '/users';
 
 const Users = () => {
   const [users, setUsers] = useState();
@@ -10,30 +12,24 @@ const Users = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const refresh = useRefreshToken();
-
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
-    const fetchUsers = async () => {
+    const getAllUsers = async () => {
       try {
-        const data = await getUsers(axiosPrivate, controller.signal);
-        if (isMounted) setUsers(data.data);
+        const { data } = await axiosPrivate.get(USERS_URL, {
+          signal: controller.signal
+        });
+        console.log(data.data);
+        isMounted && setUsers(data.data);
       } catch (err) {
-        console.error('Error fetching users:', err);
-
-        if (err?.response?.status === 403) {
-          navigate('/login', { state: { from: location }, replace: true });
-        } else if (!err.response) {
-          console.error('Network or server error:', err.message);
-        } else {
-          console.error('Unexpected error:', err.response?.data || err.message);
-        }
+        console.error(err);
+        navigate('/login', { state: { from: location }, replace: true })
       }
-    };
+    }
 
-    fetchUsers();
+    getAllUsers();
 
     return () => {
       isMounted = false;
@@ -44,17 +40,13 @@ const Users = () => {
   return (
     <article>
       <h2>Users List</h2>
-      {users?.length ? (
-        <ul>
-          {users.map((user) => (
-            <li key={user.id}>{user?.username}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No users to display</p>
-      )}
-      <button onClick={() => refresh()}>Refresh</button>
-      <br />
+      {users?.length
+        ? (
+          <ul>
+            {users.map((user) => <li key={user?.id}>{user?.username}</li>)}
+          </ul>
+        ) : <p>No users to display</p>
+      }
     </article>
   );
 };

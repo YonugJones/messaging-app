@@ -2,11 +2,12 @@ import { useRef, useState, useEffect } from 'react';
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-import { signup } from '../../api/authService';
+import axios from '../../api/axios';
 import './Signup.css';
 
 const USERNAME_REGEX = /^\S{3,24}$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/;
+const SIGNUP_URL = '/auth/signup';
 
 const Signup = () => {
   const usernameRef = useRef();
@@ -56,7 +57,13 @@ const Signup = () => {
 
     try {
       // API call with inputed credentials
-      await signup({ username, password, confirmPassword });
+      await axios.post(SIGNUP_URL, 
+        JSON.stringify({ username, password, confirmPassword }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
       setSuccess(true);
       // clear the input fields 
       setUsername('');
