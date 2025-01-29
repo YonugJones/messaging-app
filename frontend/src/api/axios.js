@@ -10,9 +10,9 @@ export default axios.create({
     baseURL: BASE_URL
 });
 
-// interceptors will be attached to axiosPrivate
-export const axiosPrivate = axios.create({
-    baseURL: BASE_URL, 
-    headers: { 'Content-Type': 'application/json' },
-    withCredentials: true,
-});
+// // interceptors will be attached to axiosPrivate
+// export const axiosPrivate = axios.create({
+//     baseURL: BASE_URL, 
+//     headers: { 'Content-Type': 'application/json' },
+//     withCredentials: true,
+// });

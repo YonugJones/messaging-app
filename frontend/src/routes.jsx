@@ -12,7 +12,7 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       { path: '/signup', element: <Signup /> },
-      { path: '/login', element:  <Login /> },
+      { path: '/login', element: <Login /> },
       { 
         path: '/dashboard',
         element: <RequireAuth />,
@@ -25,3 +25,27 @@ const routes = [
 ];
 
 export default routes;
+
+// const routes = [
+//   {
+//     path: '/',
+//     element: <App />,
+//     errorElement: <ErrorPage />,
+//     children: [
+//       { path: '/signup', element: <Signup /> },
+//       { path: '/login', element: <Login /> },
+//       { 
+//         element: <PersistLogin />,  
+//         children: [
+//           { 
+//             path: '/dashboard',
+//             element: <RequireAuth />,
+//             children: [
+//               { path: '', element: <Dashboard /> }
+//             ]
+//           }
+//         ]
+//       }
+//     ]
+//   }
+// ];

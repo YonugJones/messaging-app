@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import axios from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import './Users.css';
@@ -8,7 +8,6 @@ const USERS_URL = '/users';
 
 const Users = () => {
   const [users, setUsers] = useState();
-  const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,7 +17,7 @@ const Users = () => {
 
     const getAllUsers = async () => {
       try {
-        const { data } = await axiosPrivate.get(USERS_URL, {
+        const { data } = await axios.get(USERS_URL, {
           signal: controller.signal
         });
         console.log(data.data);
@@ -35,7 +34,7 @@ const Users = () => {
       isMounted = false;
       controller.abort();
     };
-  }, [axiosPrivate, location, navigate]);
+  }, [location, navigate]);
 
   return (
     <article>
