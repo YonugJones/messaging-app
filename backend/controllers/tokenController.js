@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   // extract the refreshToken attached to the cookie
+
   const { refreshToken } = req.cookies;
   if (!refreshToken) {
     throw new CustomError('Refresh token missing', 403);
@@ -29,27 +30,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '15m' }
     );
-
-    // generate new refreshToken to help prevent reuse attacks
-    const newRefreshToken =jwt.sign(
-      { id: user.id, username: user.username },
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || '1d' }
-    );
-
-    // store new refreshToken in database
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { refreshToken: newRefreshToken }
-    })
-
-    // set new refreshToken in cookie
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      sameSite: 'None',
-      secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    })
 
     // response to front end
     res.status(200).json({ accessToken });
