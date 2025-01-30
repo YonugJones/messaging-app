@@ -4,53 +4,46 @@ import useAuth from './useAuth';
 import useRefreshToken from '../hooks/useRefreshToken';
 
 const useAxiosPrivate = () => {
-  const { auth } = useAuth();
+  const { auth } = useAuth(); 
   const refresh = useRefreshToken();
 
   useEffect(() => {
-    // attach accessToken to req header IF there is no req header AND if user's auth contains accessToken
-  const requestIntercept = axiosPrivate.interceptors.request.use(
-    (config) => {
-      if (!config.headers['Authorization'] && auth?.accessToken) {
-        config.headers['Authorization'] = `Bearer ${auth.accessToken}`;
-        console.log('accesToken attached to request intercept');
-      }
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
-
-  // get ready to attach to response
-  const responseIntercept = axiosPrivate.interceptors.response.use(
-    // if response return true, do nothing to it
-    (response) => response,
-    // if error
-    async (error) => {
-      // define prevRequest as error config
-      const prevRequest = error?.config;
-      // if error resopnse is   3 and response has been sent ONCE
-      if (error?.response?.status === 403 && !prevRequest?.sent) {
-        prevRequest.sent = true;
-        // generate newAccessToken
-        const newAccessToken = await refresh();
-        // if success
-        if (newAccessToken) {
-          // set access token in response headers
-          prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-          return axiosPrivate(prevRequest);
+    const requestIntercept = axiosPrivate.interceptors.request.use(
+      config => {
+        // this is not a retry, there has been no auth header set
+        if (!config.headers['Authorization']) {
+          config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
         }
+        return config;
+      }, (error) => Promise.reject(error)
+    );
+
+    // potentially added a NEW accessToken to response auth header
+    const responseIntercept = axiosPrivate.interceptors.response.use(
+      // if accessToken is attached and not expired, return the response with no changes to interceptors
+      response => response,
+      // if accessToken has expired
+      async (error) => {
+        const prevRequest = error?.config;
+        // forbidden error if accessToken has expired or this has only tried once
+        if (error?.response?.status === 403 && !prevRequest?.sent) {
+          prevRequest.sent = true;
+          const newAccessToken = await refresh();
+          prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          return axiosPrivate(newAccessToken);
+        }
+        return Promise.reject(error);
       }
-      return Promise.reject(error);
+    );
+
+    return () => {
+      // on unmount eject the attached auth headers so they don't pile up
+      axiosPrivate.interceptors.request.eject(requestIntercept);
+      axiosPrivate.interceptors.response.eject(responseIntercept);
     }
-  );
-
-  return () => {
-    axiosPrivate.interceptors.request.eject(requestIntercept);
-    axiosPrivate.interceptors.response.eject(responseIntercept);
-  };
-
   }, [auth, refresh]);
 
+  // axiosPrivate instance returned with attached interceptors to req and res
   return axiosPrivate;
 }
 
