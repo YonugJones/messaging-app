@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../../hooks/useAuth';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
 import './Login.css';
 
@@ -10,8 +10,6 @@ const Login = () => {
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
 
   const usernameRef = useRef();
   const errRef = useRef();
@@ -41,12 +39,15 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      console.log(JSON.stringify(data)); // backend sends succes, message, and data which includes id, username, and accessToken
-      const { accessToken } = data;
-      setAuth({ username, accessToken })
+      const userData = data.data;
+      setAuth({
+        id: userData.id,
+        username: userData.username,
+        accessToken: userData.accessToken
+      });
       setUsername('');
       setPassword('');
-      navigate(from, { replace: true }); // sent back to where the user came from
+      navigate('/dashboard');
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No server response')

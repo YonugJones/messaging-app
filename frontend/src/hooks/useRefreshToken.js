@@ -12,11 +12,6 @@ const useRefreshToken = () => {
         withCredentials: true, // Send the HTTP-only cookie
       });
 
-      // setAuth(prev => ({
-      //   ...prev,
-      //   accessToken: response.data.accessToken,
-      // }));
-
       setAuth(prev => {
         console.log(JSON.stringify(prev));
         console.log(data.accessToken);

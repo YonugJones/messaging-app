@@ -7,8 +7,8 @@ const Dashboard = () => {
       <h1>Dashboard</h1>
       <p>You Are AUTHENTICATED</p>
       <Users />
-      <Link to='/dashboard/1'>Page One</Link> <br />
-      <Link to='/dashboard/2'>Page Two</Link>
+      <Link to='/dashboard/11'>Page One</Link> <br />
+      <Link to='/dashboard/22'>Page Two</Link>
     </>
   )
 }

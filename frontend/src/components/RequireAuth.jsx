@@ -4,10 +4,13 @@ import useAuth from '../hooks/useAuth';
 const RequireAuth = () => {
   const { auth } = useAuth();
   const location = useLocation();
+
+  console.log(auth);
   
   return (
     // check if user has authToken attached to global auth
     auth?.accessToken
+
     // if so, let them through
       ? <Outlet />
       // if not, send them to the login route

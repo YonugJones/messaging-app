@@ -14,7 +14,6 @@ const Users = () => {
 
     const getAllUsers = async () => {
       try {
-        console.log('get all users')
         const { data } = await axiosPrivate.get(USERS_URL, {
           signal: controller.signal
         });
@@ -33,12 +32,12 @@ const Users = () => {
   }, [axiosPrivate]);
 
   return (
-    <article>
+    <article className='user-list-container'>
       <h2>Users List</h2>
       {users?.length
         ? (
-          <ul>
-            {users.map((user) => <li key={user?.id}>{user?.username}</li>)}
+          <ul className='user-list'>
+            {users.map((user) => <li className='user-list-item' key={user?.id}>{user?.username}</li>)}
           </ul>
         ) : <p>No users to display</p>
       }

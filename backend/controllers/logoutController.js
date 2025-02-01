@@ -30,7 +30,7 @@ const logout = asyncHandler(async (req, res) => {
       return res.status(204).json({ success: true })
     }
 
-    // Delete refresh cookie in DB
+    // Delete refresh token in DB
     await prisma.user.update({
       where: { id: payload.id },
       data: {

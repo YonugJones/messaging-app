@@ -1,0 +1,12 @@
+.user-list-container {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.user-list {
+  border: 1px solid black;
+}
+
+.user-list-item {
+  list-style: none;
+}

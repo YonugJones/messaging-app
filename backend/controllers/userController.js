@@ -1,9 +1,11 @@
 const prisma = require('../prisma/prismaClient');
+const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const CustomError = require('../errors/customError');
 
 const getAllUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany({
+    orderBy: { id: 'asc' },
     select: {
       id: true,
       username: true,
@@ -34,7 +36,6 @@ const getUser = asyncHandler(async (req, res) => {
   const user = await prisma.user.findUnique({ 
     where: { id: userId },
     select: {
-      id: true,
       username: true,
       profilePic: true,
       profileBio: true
@@ -59,13 +60,20 @@ const updateUserInfo = asyncHandler(async (req, res) => {
     throw new CustomError('Invalid user ID', 400);
   }
 
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      username: true,
+      profilePic: true,
+      profileBio: true
+    }
+  });
+
   if (!user) {
     throw new CustomError('User not found', 404);
   }
 
   const { username, profilePic, profileBio } = req.body;
-
 
   const updateUser = await prisma.user.update({
     where: { id: userId },
@@ -75,17 +83,26 @@ const updateUserInfo = asyncHandler(async (req, res) => {
       profileBio,
     },
     select: {
-      id: true,
       username: true,
       profilePic: true,
       profileBio: true,
     },
   });
 
+    // Generate a new access token
+    const accessToken = jwt.sign(
+      { id: updateUser.id, username: updateUser.username },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '15m' }
+    );
+
   res.status(200).json({
     success: true,
     message: 'User information updated',
-    data: updateUser,
+    data: {
+      ...updateUser,
+      accessToken
+    }
   });
 });
 

@@ -98,8 +98,8 @@ const login = asyncHandler(async (req, res) => {
     data: {
       id: user.id,
       username: user.username,
+      accessToken,
     },
-    accessToken,
   })
 });
 

@@ -4,8 +4,10 @@ import Signup from './components/Signup/Signup';
 import ErrorPage from './pages/ErrorPage/ErrorPage';
 import RequireAuth from './components/RequireAuth';
 import Dashboard from './pages/Dashboard/Dashboard';
+import Profile from './pages/Profile/Profile';
 import PageOne from './pages/PageOne';
 import PageTwo from './pages/PageTwo';
+
 
 const routes = [
   {
@@ -20,8 +22,9 @@ const routes = [
         element: <RequireAuth />,
         children: [
           { path: '', element: <Dashboard /> },
-          { path: '/dashboard/1', element: <PageOne /> },
-          { path: '/dashboard/2', element: <PageTwo /> }
+          { path: '/dashboard/:userId', element: <Profile /> },
+          { path: '/dashboard/11', element: <PageOne /> },
+          { path: '/dashboard/22', element: <PageTwo /> }
         ],
       },
     ],
