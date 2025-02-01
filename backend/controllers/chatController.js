@@ -157,6 +157,7 @@ const addUserToChat = asyncHandler(async (req, res) => {
 
 module.exports = {
   createChat,
+  getUserChats,
   getChat,
   addUserToChat,
 }
