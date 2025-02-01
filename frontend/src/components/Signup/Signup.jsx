@@ -86,7 +86,7 @@ const Signup = () => {
       { success ? (
         <section>
           <h1>Success!</h1>
-          <Link to='#'>Login</Link>
+          <Link to='/login'>Login</Link>
         </section>
       ) : (
         <section>

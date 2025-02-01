@@ -65,11 +65,9 @@ const Profile = () => {
     e.preventDefault();
 
     try {
-      console.log('running api fetch') // logs
       const { data } = await axiosPrivate.put(USER_URL, 
         JSON.stringify({ username, profilePic, profileBio })
       );
-      console.log('Response data:', data); // does not log
       setAuth(prev => ({
         ...prev, 
         username: data.data.username, 

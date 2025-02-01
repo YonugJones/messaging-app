@@ -91,6 +91,8 @@ const login = asyncHandler(async (req, res) => {
     maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
   });
 
+
+
   // response to front end
   res.status(200).json({
     success: true,

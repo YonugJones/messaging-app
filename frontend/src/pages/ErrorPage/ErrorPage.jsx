@@ -5,9 +5,9 @@ const ErrorPage = () => {
   return (
     <div className='error-page'> 
       <h1>You are in uncharted territories</h1>
-      <Link to='/'>
-        Click here to head back to the homepage
-      </Link>
+      <p><Link to='/dashboard'>
+        Click here to head back
+      </Link></p>
     </div>
   );
 };

@@ -20,6 +20,61 @@ const createChat = asyncHandler(async (req, res) => {
   });
 });
 
+const getUserChats = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  // declare chats variable
+  const chats = await prisma.chat.findMany({
+    // match chats where
+    where: {
+      // in chatUsers category
+      chatUsers: {
+        some: {
+          // there contains a userId that matches the req userId
+          userId: userId
+        }
+      }
+    },
+    // info to be included
+    include: {
+      // within the chatUsers
+      chatUsers: {
+        // include
+        include: {
+          // within the user
+          user: {
+            // id, username, and profilePic
+            select: { id: true, username: true, profilePic: true }
+          }
+        }
+      },
+      // within the messages
+      messages: {
+        // order by newest first
+        orderBy: { createdAt: 'desc' },
+        // display only one message
+        take: 1,
+      }
+    }
+  });
+
+  // if there are no chats
+  if (!chats.length) {
+    // return success 
+    return res.status(200).json({
+      success: true,
+      message: 'No chats found',
+      data: []
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'User chats retrieved successfully',
+    data: chats,
+  });
+});
+
 const getChat = asyncHandler(async (req, res) => {
   const chatId = parseInt(req.params.chatId, 10);
   const userId = req.user.id;
