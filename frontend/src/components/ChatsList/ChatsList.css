@@ -1,0 +1,32 @@
+.chats-list li {
+  list-style: none;
+  border: 1px solid black;
+  padding: 5px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.chats-list li:hover {
+  background-color: rgba(0, 0, 0, 0.1); 
+  transform: scale(1.05); 
+  cursor: pointer;
+}
+
+.chats-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chats-list-header-right {
+  border: 1px solid black;
+  padding: 5px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.chats-list-header-right:hover {
+  background-color: rgba(0, 0, 0, 0.1); 
+  transform: scale(1.05); 
+  cursor: pointer;
+}

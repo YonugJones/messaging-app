@@ -1,0 +1,15 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboard-body {
+  display: flex;
+  
+}
