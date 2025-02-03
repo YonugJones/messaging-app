@@ -49,7 +49,16 @@ const Chat = () => {
       <div className='chat-container'>
         {/* Chat Header */}
         <div className='chat-header'>
-          <h2>{chat?.name || 'Chat'}</h2>
+          {/* <h2>{chat?.name || 'Chat'}</h2> */}
+          <h2>
+            {chat?.chatUsers
+              ? chat.chatUsers
+                  .map((chatUser) => chatUser?.user) // Ensure chatUser has a user property
+                  .filter((user) => user && user.id !== auth?.id) // Check user exists before accessing id
+                  .map((user) => user.username) // Extract username
+                  .join(', ') || 'Chat'
+              : 'Chat'}
+          </h2>
         </div>
 
         {/* Fetched Messages are mapped here */}

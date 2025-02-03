@@ -82,7 +82,11 @@ const getChat = asyncHandler(async (req, res) => {
   const chat = await prisma.chat.findUnique({
     where: { id: chatId },
     include: {
-      chatUsers: true,
+      chatUsers: {
+        include: {
+          user: { select: { id: true, username: true, profilePic: true } }
+        }
+      },
       messages: true,
     },
   });
