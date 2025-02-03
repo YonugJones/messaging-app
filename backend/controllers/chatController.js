@@ -100,6 +100,7 @@ const getChat = asyncHandler(async (req, res) => {
     success: true,
     message: 'Chat retrieved',
     data: chat,
+    userId,
   });
 });
 

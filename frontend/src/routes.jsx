@@ -24,6 +24,13 @@ const routes = [
           { path: '/dashboard/:userId', element: <Profile /> }
         ],
       },
+      {
+        path: '/chats',
+        element: <RequireAuth />,
+        children: [
+          { path: '/chats/:chatId', element: <Chat /> }
+        ]
+      }
     ],
   },
 ];

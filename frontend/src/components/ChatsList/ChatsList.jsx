@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import './ChatsList.css';
-
-const CHATS_URL = '/chats';
 
 const ChatsList = () => {
   const [chats, setChats] = useState([]);
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+  const CHATS_URL = '/chats';
 
   useEffect(() => {
     let isMounted = true;
@@ -44,8 +45,13 @@ const ChatsList = () => {
       {chats?.length ? (
         <ul className='chats-list'>
           {chats.map((chat) => (
-            <li className='chat-list-item' key={chat.id}>
-              {chat.name || `Chat ${chat.id}`}
+            <li 
+              className='chat-list-item' 
+              key={chat.id} 
+              onClick={() => navigate(`/chats/${chat.id}`)} 
+              style={{ cursor: 'pointer' }}
+            >
+              <strong>{chat.name || `Chat ${chat.id}`}</strong>
               {chat.messages?.length > 0 ? (
                 <p>{chat.messages[0].content}</p>
               ) : (
@@ -58,7 +64,7 @@ const ChatsList = () => {
         <p>No chats to display</p>
       )}
     </section>
-  )
+  );
 }
 
 export default ChatsList;
