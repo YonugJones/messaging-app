@@ -76,17 +76,25 @@ const getUserChats = asyncHandler(async (req, res) => {
 });
 
 const getChat = asyncHandler(async (req, res) => {
+  // declare chatId from url params
   const chatId = parseInt(req.params.chatId, 10);
+  // declare useId from id attached to req.user
   const userId = req.user.id;
 
+  // find a chat
   const chat = await prisma.chat.findUnique({
+    // where the id matches the url chatId param
     where: { id: chatId },
+    // include
     include: {
+      // within chatUsers
       chatUsers: {
         include: {
+          // these categories
           user: { select: { id: true, username: true, profilePic: true } }
         }
       },
+      // and messages array
       messages: true,
     },
   });

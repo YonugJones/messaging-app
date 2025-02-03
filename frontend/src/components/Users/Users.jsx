@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import './Users.css';
 
-const USERS_URL = '/users';
 
 const Users = () => {
+  const USERS_URL = '/users';
   const axiosPrivate = useAxiosPrivate();
   const [users, setUsers] = useState();
 
@@ -13,13 +13,14 @@ const Users = () => {
     const controller = new AbortController();
 
     const getAllUsers = async () => {
+      console.log('getting and setting users');
       try {
         const { data } = await axiosPrivate.get(USERS_URL, {
           signal: controller.signal
         });
         isMounted && setUsers(data.data);
       } catch (err) {
-        console.error(err);
+        console.error('Error getting and setting users:', err);
       }
     }
 

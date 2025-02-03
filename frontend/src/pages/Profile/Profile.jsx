@@ -52,6 +52,7 @@ const Profile = () => {
         setUsername(userData.username || '');
         setProfilePic(userData.profilePic || '');
         setProfileBio(userData.profileBio || '');
+        console.log('getting user info')
       } catch (err) {
         console.error('Error fetching user data:', err)
       }

@@ -19,6 +19,7 @@ const ChatsList = () => {
           signal: controller.signal
         });
         isMounted && setChats(data.data);
+        console.log('loading and setting chats');
       } catch (err) {
         console.error(err);
       }

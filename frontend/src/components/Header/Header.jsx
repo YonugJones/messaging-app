@@ -8,10 +8,8 @@ import './Header.css';
 const Header = () => {
   const { auth, setAuth } = useAuth();
 
-
   const handleLogout = async () => {
-    const { data } = await axios.get('/logout', { withCredentials: true });
-    console.log(data); 
+    await axios.get('/logout', { withCredentials: true });
     setAuth(null);
   }
 
