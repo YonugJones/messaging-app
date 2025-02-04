@@ -53,9 +53,6 @@ const Chat = () => {
       return;
     }
 
-    console.log("Sending request to:", MESSAGE_URL);
-    console.log("Payload:", { chatId, content: newMessage });
-
     try {
       const { data } = await axiosPrivate.post(MESSAGE_URL, {
         chatId,

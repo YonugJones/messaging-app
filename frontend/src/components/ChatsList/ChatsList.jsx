@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import useAuth from '../../hooks/useAuth';
 import './ChatsList.css';
 
 const ChatsList = () => {
   const [chats, setChats] = useState([]);
   const axiosPrivate = useAxiosPrivate();
+  const { auth } = useAuth();
   const navigate = useNavigate();
   const CHATS_URL = '/chats';
 
@@ -54,7 +56,16 @@ const ChatsList = () => {
               onClick={() => navigate(`/chats/${chat.id}`)} 
               style={{ cursor: 'pointer' }}
             >
-              <strong>{chat.name || `Chat ${chat.id}`}</strong>
+              {/* this part should show chatUsers */}
+              <strong>
+                {chat?.chatUsers
+                  ? chat.chatUsers
+                      .map((chatUser) => chatUser?.user) // Ensure chatUser has a user property
+                      .filter((user) => user && user.id !== auth?.id) // Exclude the current user
+                      .map((user) => user.username) // Extract username
+                      .join(', ') || `Chat ${chat.id}`
+                  : `Chat ${chat.id}`}
+              </strong>  
               {chat.messages?.length > 0 ? (
                 <p>{chat.messages[0].content}</p>
               ) : (
