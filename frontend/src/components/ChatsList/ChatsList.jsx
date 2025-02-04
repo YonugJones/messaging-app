@@ -56,7 +56,6 @@ const ChatsList = () => {
               onClick={() => navigate(`/chats/${chat.id}`)} 
               style={{ cursor: 'pointer' }}
             >
-              {/* this part should show chatUsers */}
               <strong>
                 {chat?.chatUsers
                   ? chat.chatUsers

@@ -10,9 +10,10 @@ const Chat = () => {
   const [chat, setChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const { auth } = useAuth();
+
   const CHAT_URL = `/chats/${chatId}`;
   const MESSAGE_URL = `/messages/send`
-  const { auth } = useAuth();
 
   // fetches chat and messages on mount and when message dependency changes
   useEffect(() => {
@@ -71,7 +72,6 @@ const Chat = () => {
       <div className='chat-container'>
         {/* Chat Header */}
         <div className='chat-header'>
-          {/* <h2>{chat?.name || 'Chat'}</h2> */}
           <h2>
             {chat?.chatUsers
               ? chat.chatUsers
