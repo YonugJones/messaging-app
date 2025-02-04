@@ -118,7 +118,11 @@ const getChat = asyncHandler(async (req, res) => {
 
 const addUserToChat = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const { chatId, chatUserIds } = req.body;
+  const chatId = parseInt(req.body.chatId, 10);
+  const chatUserIds = req.body.chatUserIds.map((id) => parseInt(id, 10));
+
+  console.log('userId:', userId);
+  console.log('chatId:', chatId, 'chatUserIds:', chatUserIds);
 
   if (!chatId) {
     throw new CustomError('Chat ID needed', 404);
@@ -134,6 +138,7 @@ const addUserToChat = asyncHandler(async (req, res) => {
       chatUsers: true,
     },
   });
+  console.log('chat:', chat);
 
   if (!chat) {
     throw new CustomError('Chat not found', 404);
