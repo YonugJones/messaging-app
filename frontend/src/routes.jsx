@@ -20,8 +20,8 @@ const routes = [
         path: '/dashboard',
         element: <RequireAuth />,
         children: [
-          { path: '', element: <Dashboard /> },
-          { path: '/dashboard/:userId', element: <Profile /> }
+          { index: true, element: <Dashboard /> },
+          { path: ':userId', element: <Profile /> }
         ],
       },
       {

@@ -9,8 +9,12 @@ const Header = () => {
   const { auth, setAuth } = useAuth();
 
   const handleLogout = async () => {
-    await axios.get('/logout', { withCredentials: true });
-    setAuth(null);
+    try {
+      await axios.get('/logout', { withCredentials: true });
+      setAuth(null);
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
   }
 
   return (

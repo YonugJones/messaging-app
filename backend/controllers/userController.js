@@ -83,6 +83,7 @@ const updateUserInfo = asyncHandler(async (req, res) => {
       profileBio,
     },
     select: {
+      id: true,
       username: true,
       profilePic: true,
       profileBio: true,

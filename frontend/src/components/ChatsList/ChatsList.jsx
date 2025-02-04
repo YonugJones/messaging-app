@@ -16,10 +16,12 @@ const ChatsList = () => {
     const getUserChats = async () => {
       try {
         const { data } = await axiosPrivate.get(CHATS_URL, {
-          signal: controller.signal
+          signal: controller.signal,
         });
-        isMounted && setChats(data.data);
-        console.log('loading and setting chats');
+        if (isMounted) {
+          console.log('Fetched chats on mount:', data.data);
+          setChats(data.data);
+        }
       } catch (err) {
         console.error(err);
       }

@@ -59,7 +59,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [USER_URL, axiosPrivate]);
+  }, [USER_URL, axiosPrivate, setUsername, setProfilePic, setProfileBio]);
 
   // handle submit and change profile info
   const handleSubmit = async (e) => {
@@ -75,7 +75,7 @@ const Profile = () => {
         accessToken: data.data.accessToken, 
       }));
 
-      navigate('/dashboard');
+      navigate('/dashboard', { state: { refreshChats: true } });
     } catch (err) {
       console.log('Failed to update user info:', err);
     }
