@@ -4,20 +4,19 @@ const CustomError = require('../errors/customError');
 
 const sendMessage = asyncHandler(async (req, res) => {
   const senderId = req.user.id;
-  const { chatId, content, recipientIds } = req.body;
+  const chatId = parseInt(req.body.chatId, 10);
+  const content = req.body.content;
+
 
   if (!chatId) {
     throw new CustomError('Chat ID needed', 404);
-  }
-
-  if (!recipientIds || !Array.isArray(recipientIds) || recipientIds.length === 0) {
-    throw new CustomError('Recipients are required', 400);
   }
 
   const chat = await prisma.chat.findUnique({
     where: { id: chatId },
     include: { chatUsers: true },
   });
+
   if (!chat) {
     throw new CustomError('Chat not found', 404);
   }
@@ -27,23 +26,15 @@ const sendMessage = asyncHandler(async (req, res) => {
     throw new CustomError('Unauthorized. Sender is not part of chat', 403);
   }
 
-  const allRecipientsValid = recipientIds.every((recipientId) => 
-    chat.chatUsers.some((user) => user.userId === recipientId)
-  );
-
-  if (!allRecipientsValid) {
-    throw new CustomError('One or more recipients are not part of chat', 400);  
-  }
-
   const message = await prisma.message.create({
     data: {
       content,
       authorId: senderId,
       chatId,
       recipients: {
-        create: recipientIds.map((recipientId) => ({
-          userId: recipientId,
-        })),
+        create: chat.chatUsers
+          .filter(user => user.userId !== senderId)
+          .map(user => ({ userId: user.userId })),
       },
     },
   });

@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useAuth from '../../hooks/useAuth';
 
-
 const Chat = () => {
   const axiosPrivate = useAxiosPrivate();
   const { chatId } = useParams();
@@ -12,6 +11,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const CHAT_URL = `/chats/${chatId}`;
+  const MESSAGE_URL = `/messages/send`
   const { auth } = useAuth();
 
   // fetches chat and messages on mount and when message dependency changes
@@ -43,6 +43,31 @@ const Chat = () => {
   }, [axiosPrivate, CHAT_URL]);
 
   // logic to add new message
+  const handleSendMessage = async () => {
+    // if newMessage field is empty, return
+    if (!newMessage.trim()) return;
+
+    // if chat or chatUsers does not exist, return
+    if (!chat ) {
+      console.error('Chat not found');
+      return;
+    }
+
+    console.log("Sending request to:", MESSAGE_URL);
+    console.log("Payload:", { chatId, content: newMessage });
+
+    try {
+      const { data } = await axiosPrivate.post(MESSAGE_URL, {
+        chatId,
+        content: newMessage,
+      });
+
+      setMessages(prevMessages => [...prevMessages, data.data]);
+      setNewMessage('');
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    }
+  }
 
   return (
     <div className='chat-layout'>
@@ -83,7 +108,7 @@ const Chat = () => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
-          <button>Send</button>
+          <button onClick={handleSendMessage}>Send</button>
         </div>
       </div>
     </div>
