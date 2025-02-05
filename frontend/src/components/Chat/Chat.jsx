@@ -128,11 +128,13 @@ const Chat = () => {
         <div className='add-user-section'>
           <select value={newUserId} onChange={(e) => setNewUserId(e.target.value)}>
             <option value=''>Select a user</option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.username}
-              </option>
-            ))}
+            {users
+              .filter(user => !chat?.chatUsers.some(chatUser => chatUser.user.id === user.id)) 
+              .map(user => (
+                <option key={user.id} value={user.id}>
+                  {user.username}
+                </option>
+              ))}
           </select>
           <button onClick={handleAddUserToChat} disabled={!newUserId}>
             Add User

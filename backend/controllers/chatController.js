@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const CustomError = require('../errors/customError');
 
 const createChat = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
+  const userId = parseInt(req.user.id, 10);
   const chat = await prisma.chat.create({
     data: {
       chatUsers: {

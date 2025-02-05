@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import useAuth from '../../hooks/useAuth';
 import './ChatsList.css';
+import NewChat from '../NewChat/NewChat';
 
 const ChatsList = () => {
   const [chats, setChats] = useState([]);
+  const [showNewChat, setShowNewChat] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const navigate = useNavigate();
@@ -21,7 +23,6 @@ const ChatsList = () => {
           signal: controller.signal,
         });
         if (isMounted) {
-          console.log('Fetched chats on mount:', data.data);
           setChats(data.data);
         }
       } catch (err) {
@@ -43,11 +44,18 @@ const ChatsList = () => {
         <div className='chats-list-header-left'>
           <h2>User chats</h2>
         </div>
-        <div className='chats-list-header-right'>
+        <div 
+          className='chats-list-header-right' 
+          onClick={() => setShowNewChat(true)} 
+          style={{ cursor: 'pointer' }}
+        >
           <p>NEW CHAT</p>
         </div>
       </div>
-      {chats?.length ? (
+
+      {showNewChat ? (
+        <NewChat setShowNewChat={setShowNewChat} setChats={setChats} />
+      ) : chats?.length ? (
         <ul className='chats-list'>
           {chats.map((chat) => (
             <li 
@@ -59,9 +67,9 @@ const ChatsList = () => {
               <strong>
                 {chat?.chatUsers
                   ? chat.chatUsers
-                      .map((chatUser) => chatUser?.user) // Ensure chatUser has a user property
-                      .filter((user) => user && user.id !== auth?.id) // Exclude the current user
-                      .map((user) => user.username) // Extract username
+                      .map((chatUser) => chatUser?.user)
+                      .filter((user) => user && user.id !== auth?.id)
+                      .map((user) => user.username)
                       .join(', ') || `Chat ${chat.id}`
                   : `Chat ${chat.id}`}
               </strong>  
